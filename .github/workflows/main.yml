@@ -1,0 +1,36 @@
+name: Sync Notebook to README
+on:
+  push:
+    paths:
+      - "Komnum_Tugas_Proyek.ipynb"
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          pip install nb-clean nbconvert jupyter
+
+      - name: Clean Notebook
+        run: |
+          nb-clean clean --preserve-cell-outputs Komnum_Tugas_Proyek.ipynb
+
+      - name: Convert Notebook to Markdown
+        run: |
+          jupyter nbconvert --to markdown Komnum_Tugas_Proyek.ipynb --output README
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Auto-update README.md from README.ipynb" || exit 0
+          git push
