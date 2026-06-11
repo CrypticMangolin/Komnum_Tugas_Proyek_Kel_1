@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - "Komnum_Tugas_Proyek.ipynb"
+permissions:
+  contents: write
 jobs:
   update-readme:
     runs-on: ubuntu-latest
@@ -26,11 +28,12 @@ jobs:
       - name: Convert Notebook to Markdown
         run: |
           jupyter nbconvert --to markdown Komnum_Tugas_Proyek.ipynb --output README
+          sed -i 's/\\,//g' README.md
 
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "Auto-update README.md from README.ipynb" || exit 0
+          git commit -m "Auto-update README.md from Notebook" || exit 0
           git push

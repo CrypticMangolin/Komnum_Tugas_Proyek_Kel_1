@@ -36,7 +36,8 @@ x = sp.symbols('x')
 
 def parse_function(f_str):
     transformations = standard_transformations + (convert_xor, implicit_multiplication_application)
-    f = parse_expr(f_str, transformations=transformations)
+    local_dict = {'e': sp.E, 'π': sp.pi}
+    f = parse_expr(f_str, transformations=transformations, local_dict=local_dict)
     return f
 
 def show(*args):
@@ -51,12 +52,14 @@ def show(*args):
 
 
 ```python
-a=0
-b=2
+a, b = 0, 2
 # f_str = input("Enter function (example 3x^5+2x^2+5): ")
-# f_str = "5x^5+8x^3-3x^2+3"
-f_str = "x**2+5"
+# f_str = "x**3+2x+5"
+# f_str = "0.2+25x-200x^2+675x^3-900x^4+400x^5"
+f_str = "x^2+5"
+# f_str = "(x+1)/(x-2)"
 # f_str = "sin(x)"
+# f_str = "e^x"
 
 f = parse_function(f_str)
 show(f)
@@ -70,11 +73,6 @@ $\displaystyle x^{2} + 5$
 ```python
 F = sp.integrate(f, x)
 show(sp.Integral(f, x),"=", F,"+C")
-
-exact_integral = sp.integrate(f, (x, a, b))
-exact_value = float(exact_integral) # Hasil True
-f_x_str = sp.Integral(sp.Function('f')(x), (x, a, b)) # f(x)
-show(f_x_str,"=", exact_integral, "=", f"{exact_value:.2f}")
 ```
 
 
@@ -82,14 +80,31 @@ $\displaystyle \int \left(x^{2} + 5\right)\, dx=\frac{x^{3}}{3} + 5 x+C$
 
 
 
+```python
+exact_integral = sp.integrate(f, (x, a, b))
+exact_value = exact_integral.evalf(6) # Hasil True
+try:
+  display_str  = f"{float(exact_value):.2f}"
+except:
+  display_str = exact_value
+f_x_str = sp.Integral(sp.Function('f')(x), (x, a, b)) # f(x)
+show(f_x_str,"=", exact_integral, "=", display_str)
+```
+
+
 $\displaystyle \int\limits_{0}^{2} f{\left(x \right)}\, dx=\frac{38}{3}=12.67$
 
 
 
 ```python
+n=5
 f_num = sp.lambdify(x, f, 'numpy')
-print(f"{integrasi_trapesium(f_num, a, b, 5):.2f}")
+if exact_value.is_real:
+    show(f"L = {integrasi_trapesium(f_num, a, b, n):.2f}")
+else:
+    print(f"{exact_value} is not Real/Undefined")
 ```
 
-    12.72
-    
+
+$\displaystyle L = 12.72$
+
