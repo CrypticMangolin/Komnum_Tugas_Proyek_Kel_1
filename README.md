@@ -76,7 +76,7 @@ show(sp.Integral(f, x),"=", F,"+C")
 ```
 
 
-$\displaystyle \int \left(x^{2} + 5\right)\, dx=\frac{x^{3}}{3} + 5 x+C$
+$\displaystyle \int \left(x^{2} + 5\right) dx=\frac{x^{3}}{3} + 5 x+C$
 
 
 
@@ -92,7 +92,7 @@ show(f_x_str,"=", exact_integral, "=", display_str)
 ```
 
 
-$\displaystyle \int\limits_{0}^{2} f{\left(x \right)}\, dx=\frac{38}{3}=12.67$
+$\displaystyle \int\limits_{0}^{2} f{\left(x \right)} dx=\frac{38}{3}=12.67$
 
 
 
