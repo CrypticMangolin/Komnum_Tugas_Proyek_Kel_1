@@ -17,6 +17,8 @@ $$x_i = x_0 + i \cdot h$$
 *   `b`: Upper bound (end point, $x_n$).
 *   `n`: Number of segments.
 
+Fungsi `integrasi_trapesium()` digunakan untuk menghitung pendekatan nilai integral tentu menggunakan metode trapesium majemuk (Composite Trapezoidal Rule). Pertama, program menghitung lebar setiap subinterval *h=(b−a)/n*. Selanjutnya, nilai fungsi pada seluruh titik interior dijumlahkan menggunakan perulangan. Nilai fungsi pada batas bawah dan batas atas diberi bobot 1/2 sesuai rumus metode trapesium. Hasil akhir diperoleh dengan mengalikan jumlah tersebut dengan lebar interval h. Implementasi ini merepresentasikan rumus:
+
 
 ```python
 def integrasi_trapesium(f, a, b, n):
