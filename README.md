@@ -34,8 +34,6 @@ $$x_i = x_0 + i \cdot h$$
 2. **Perhitungan Integrasi Eksak:** Menghitung nilai analitis (antiturunan) sejati sebagai referensi pembanding nilai numerik.
 3. **Simulasi Dinamis & Iterasi:** Menampilkan tabel hasil integrasi numerik ($L$), lebar segmen ($h$), dan persentase galat relatif sejati ($E_t$) secara berulang hingga tingkat kesalahan memenuhi batas toleransi yang ditentukan (misalnya $E \le 1\%$).
 
----
-
 ## 🚀 Cara Penggunaan
 
 ### 1. Menjalankan di Google Colab (Rekomendasi)
@@ -43,6 +41,8 @@ Anda dapat langsung menjalankan berkas `.ipynb` ini di lingkungan Google Colab:
 1. Klik *badge* **"Open In Colab"** yang ada di bagian atas berkas README ini.
 2. Pastikan runtime telah terhubung (Python 3).
 3. Jalankan blok kode (cell) dari atas ke bawah secara berurutan dengan menekan tombol *Run* atau `Shift + Enter`.
+
+---
 
 ```python
 import numpy as np
