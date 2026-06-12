@@ -56,21 +56,22 @@ Blok program di atas digunakan untuk memproses input fungsi matematika yang dibe
 
 
 ```python
-a, b = 0, 2
-# f_str = input("Enter function (example 3x^5+2x^2+5): ")
-# f_str = "x**3+2x+5"
-# f_str = "0.2+25x-200x^2+675x^3-900x^4+400x^5"
-f_str = "x^2+5"
-# f_str = "(x+1)/(x-2)"
-# f_str = "sin(x)"
-# f_str = "e^x"
+# Menerima input dari pengguna (kosongkan untuk menggunakan nilai default)
+f_str_input = input("Masukkan fungsi f(x) [Default: x^2 + 5]: ").strip()
+f_str = f_str_input if f_str_input else "x^2 + 5"
+
+a_input = input("Masukkan batas bawah (a) [Default: 0]: ").strip()
+a = float(a_input) if a_input else 0.0
+
+b_input = input("Masukkan batas atas (b) [Default: 2]: ").strip()
+b = float(b_input) if b_input else 2.0
 
 f = parse_function(f_str)
 show(f)
 ```
 
 
-$\displaystyle x^{2} + 5$
+$\displaystyle 400 x^{5} - 900 x^{4} + 675 x^{3} - 200 x^{2} + 25 x + 0.2$
 
 
 Pada tahap ini (di atas) ditentukan batas bawah dan batas atas integral, yaitu *a = 0* dan *b = 2*. Selanjutnya fungsi yang akan diintegralkan didefinisikan dalam bentuk string. Program menyediakan beberapa contoh fungsi seperti fungsi polinomial, rasional, trigonometri, dan eksponensial. Fungsi yang dipilih kemudian diproses menggunakan `parse_function()` untuk diubah menjadi ekspresi simbolik SymPy. Setelah itu, fungsi ditampilkan dalam format LaTeX menggunakan `show()` sehingga pengguna dapat memverifikasi bahwa fungsi yang akan digunakan dalam proses integrasi telah sesuai.
@@ -82,7 +83,7 @@ show(sp.Integral(f, x),"=", F,"+C")
 ```
 
 
-$\displaystyle \int \left(x^{2} + 5\right) dx=\frac{x^{3}}{3} + 5 x+C$
+$\displaystyle \int \left(400 x^{5} - 900 x^{4} + 675 x^{3} - 200 x^{2} + 25 x + 0.2\right) dx=66.6666666666667 x^{6} - 180.0 x^{5} + 168.75 x^{4} - 66.6666666666667 x^{3} + 12.5 x^{2} + 0.2 x+C$
 
 
 Blok program ini digunakan untuk menghitung integral tak tentu dari fungsi yang telah didefinisikan menggunakan kemampuan integrasi simbolik pada library SymPy. Fungsi `sp.integrate()` menghasilkan antiturunan *F(x)* dari fungsi *f(x)*. Selanjutnya, hasil integral ditampilkan dalam format LaTeX menggunakan fungsi `show()`, sehingga diperoleh bentuk matematis yang mudah dibaca. Meskipun metode trapesium merupakan metode numerik yang tidak memerlukan solusi analitik, hasil integral simbolik ini dapat digunakan sebagai referensi untuk memverifikasi hasil pendekatan numerik dan menghitung besar galat (error) metode yang digunakan.
@@ -100,19 +101,133 @@ show(f_x_str,"=", exact_integral, "=", display_str)
 ```
 
 
-$\displaystyle \int\limits_{0}^{2} f{\left(x \right)} dx=\frac{38}{3}=12.67$
+$\displaystyle \int\limits_{0.0}^{0.8} f{\left(x \right)} dx=1.64053333333333=1.64$
 
 
 
 ```python
-n=5
+from IPython.display import Markdown
+
+# Menerima input untuk nilai n (bisa satu atau banyak yang dipisahkan koma)
+n_input = input("Masukkan nilai n (pisahkan dengan koma jika lebih dari satu, contoh: 2, 3, 10) [Default: 5]: ").strip()
+if n_input:
+    # Memisahkan input koma dan mengubahnya menjadi list integer
+    n_list = [int(val.strip()) for val in n_input.split(",") if val.strip().isdigit()]
+else:
+    n_list = [5]
+
 f_num = sp.lambdify(x, f, 'numpy')
+
 if exact_value.is_real:
-    show(f"L = {integrasi_trapesium(f_num, a, b, n):.2f}")
+    exact_val_float = float(exact_value)
+    
+    # Membuat header tabel Markdown
+    table_md = "| $n$ | $h$ | Nilai Integrasi ($L$) | Galat/Error ($E_t$) |\n"
+    table_md += "|:---:|:---:|:---------------------:|:-------------------:|\n"
+    
+    for n in n_list:
+        h = (b - a) / n
+        L = integrasi_trapesium(f_num, a, b, n)
+        
+        # Hitung galat relatif sejati (%)
+        if exact_val_float != 0:
+            error = abs((exact_val_float - L) / exact_val_float) * 100
+            error_str = f"{error:.2f}%"
+        else:
+            error_str = "-"
+            
+        table_md += f"| {n} | {h:.2f} | {L:.4f} | {error_str} |\n"
+        
+    display(Markdown(table_md))
 else:
     print(f"{exact_value} is not Real/Undefined")
 ```
 
 
-$\displaystyle L = 12.72$
+| $n$ | $h$ | Nilai Integrasi ($L$) | Galat/Error ($E_t$) |
+|:---:|:---:|:---------------------:|:-------------------:|
+| 1 | 0.80 | 0.1728 | 89.47% |
+
+
+
+### Simulasi Dinamis: Tabel Hasil Integrasi & Error (Trapesium Berganda)
+
+
+```python
+from IPython.display import Markdown, display
+import sympy as sp
+
+if exact_value.is_real:
+    exact_val_float = float(exact_value)
+    
+    print("Hasil integral dari integral trapesium berganda untuk")
+    show("f(x) = ", f)
+    print(f"dari a = {a} sampai b = {b} dapat dilihat pada tabel berikut:\n")
+    
+    # Menentukan nilai awal n_start dari Cell 7
+    n_start = min(n_list) if ('n_list' in globals() and n_list) else 2
+    if n_start < 2:
+        n_start = 2
+        
+    f_num = sp.lambdify(x, f, 'numpy')
+    
+    # Membuat tabel Markdown lengkap secara dinamis hingga galat <= 1%
+    table_md = "| $n$ | $h$ | $L$ | $E \\%$ |\n"
+    table_md += "|:---:|:---:|:---------------------:|:---------------------:|\n"
+    
+    n = n_start
+    max_iterations = 100  # Batas keamanan untuk menghindari tabel yang terlalu panjang/hang
+    
+    for _ in range(max_iterations):
+        h = (b - a) / n
+        L = integrasi_trapesium(f_num, a, b, n)
+        
+        # Hitung galat error (%)
+        if exact_val_float != 0:
+            error = abs((exact_val_float - L) / exact_val_float) * 100
+            error_str = f"{error:.1f}%"
+        else:
+            error = 0.0
+            error_str = "-"
+            
+        table_md += f"| {n} | {h:.4f} | {L:.4f} | {error_str} |\n"
+        
+        # Kondisi berhenti jika galat error <= 1%
+        if error <= 1.0:
+            break
+            
+        n += 1
+        
+    display(Markdown(table_md))
+else:
+    print(f"{exact_value} is not Real/Undefined")
+```
+
+    Hasil integral dari integral trapesium berganda untuk
+
+
+
+$\displaystyle f(x) = 400 x^{5} - 900 x^{4} + 675 x^{3} - 200 x^{2} + 25 x + 0.2$
+
+
+    dari a = 0.0 sampai b = 0.8 dapat dilihat pada tabel berikut:
+    
+
+
+
+| $n$ | $h$ | $L$ | $E \%$ |
+|:---:|:---:|:---------------------:|:---------------------:|
+| 2 | 0.4000 | 1.0688 | 34.9% |
+| 3 | 0.2667 | 1.3696 | 16.5% |
+| 4 | 0.2000 | 1.4848 | 9.5% |
+| 5 | 0.1600 | 1.5399 | 6.1% |
+| 6 | 0.1333 | 1.5703 | 4.3% |
+| 7 | 0.1143 | 1.5887 | 3.2% |
+| 8 | 0.1000 | 1.6008 | 2.4% |
+| 9 | 0.0889 | 1.6091 | 1.9% |
+| 10 | 0.0800 | 1.6150 | 1.6% |
+| 11 | 0.0727 | 1.6195 | 1.3% |
+| 12 | 0.0667 | 1.6228 | 1.1% |
+| 13 | 0.0615 | 1.6254 | 0.9% |
+
 
