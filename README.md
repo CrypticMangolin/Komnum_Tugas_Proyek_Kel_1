@@ -17,8 +17,6 @@ $$x_i = x_0 + i \cdot h$$
 *   `b`: Upper bound (end point, $x_n$).
 *   `n`: Number of segments.
 
-Fungsi `integrasi_trapesium()` digunakan untuk menghitung pendekatan nilai integral tentu menggunakan metode trapesium majemuk (Composite Trapezoidal Rule). Pertama, program menghitung lebar setiap subinterval *h=(b−a)/n*. Selanjutnya, nilai fungsi pada seluruh titik interior dijumlahkan menggunakan perulangan. Nilai fungsi pada batas bawah dan batas atas diberi bobot 1/2 sesuai rumus metode trapesium. Hasil akhir diperoleh dengan mengalikan jumlah tersebut dengan lebar interval h. Implementasi ini merepresentasikan rumus:
-
 
 ```python
 def integrasi_trapesium(f, a, b, n):
@@ -27,6 +25,8 @@ def integrasi_trapesium(f, a, b, n):
     L = h * (0.5 * f(a) + xi_sum + 0.5 * f(b))
     return L
 ```
+
+Fungsi `integrasi_trapesium()` digunakan untuk menghitung pendekatan nilai integral tentu menggunakan metode trapesium majemuk (Composite Trapezoidal Rule). Pertama, program menghitung lebar setiap subinterval *h=(b−a)/n*. Selanjutnya, nilai fungsi pada seluruh titik interior dijumlahkan menggunakan perulangan. Nilai fungsi pada batas bawah dan batas atas diberi bobot 1/2 sesuai rumus metode trapesium. Hasil akhir diperoleh dengan mengalikan jumlah tersebut dengan lebar interval h. Implementasi ini merepresentasikan rumus:
 
 
 ```python
@@ -51,6 +51,8 @@ def show(*args):
             s += sp.latex(arg)
     display(Math(s))
 ```
+
+Blok program di atas digunakan untuk memproses input fungsi matematika yang diberikan pengguna dan menampilkannya dalam format matematis yang rapi. Fungsi `parse_function()` mengubah masukan berupa string menjadi ekspresi simbolik SymPy dengan mendukung notasi umum seperti `x^2`, `2x`, `e^x`, dan `π`. Sementara itu, `fungsi show()` digunakan untuk menampilkan ekspresi matematika dalam format LaTeX pada Google Colab sehingga rumus dan hasil perhitungan dapat dibaca dengan lebih jelas dan menyerupai penulisan matematika pada buku atau jurnal ilmiah.
 
 
 ```python
