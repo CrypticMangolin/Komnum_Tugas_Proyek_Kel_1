@@ -73,6 +73,8 @@ show(f)
 $\displaystyle x^{2} + 5$
 
 
+Pada tahap ini (di atas) ditentukan batas bawah dan batas atas integral, yaitu *a = 0* dan *b = 2*. Selanjutnya fungsi yang akan diintegralkan didefinisikan dalam bentuk string. Program menyediakan beberapa contoh fungsi seperti fungsi polinomial, rasional, trigonometri, dan eksponensial. Fungsi yang dipilih kemudian diproses menggunakan `parse_function()` untuk diubah menjadi ekspresi simbolik SymPy. Setelah itu, fungsi ditampilkan dalam format LaTeX menggunakan `show()` sehingga pengguna dapat memverifikasi bahwa fungsi yang akan digunakan dalam proses integrasi telah sesuai.
+
 
 ```python
 F = sp.integrate(f, x)
@@ -82,6 +84,8 @@ show(sp.Integral(f, x),"=", F,"+C")
 
 $\displaystyle \int \left(x^{2} + 5\right) dx=\frac{x^{3}}{3} + 5 x+C$
 
+
+Blok program ini digunakan untuk menghitung integral tak tentu dari fungsi yang telah didefinisikan menggunakan kemampuan integrasi simbolik pada library SymPy. Fungsi `sp.integrate()` menghasilkan antiturunan *F(x)* dari fungsi *f(x)*. Selanjutnya, hasil integral ditampilkan dalam format LaTeX menggunakan fungsi `show()`, sehingga diperoleh bentuk matematis yang mudah dibaca. Meskipun metode trapesium merupakan metode numerik yang tidak memerlukan solusi analitik, hasil integral simbolik ini dapat digunakan sebagai referensi untuk memverifikasi hasil pendekatan numerik dan menghitung besar galat (error) metode yang digunakan.
 
 
 ```python
