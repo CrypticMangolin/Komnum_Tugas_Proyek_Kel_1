@@ -27,7 +27,9 @@ jobs:
 
       - name: Convert Notebook to Markdown
         run: |
-          jupyter nbconvert --to markdown Komnum_Tugas_Proyek.ipynb --output README
+          jupyter nbconvert --to markdown Komnum_Tugas_Proyek.ipynb --output README \
+            --RegexRemovePreprocessor.enabled=True \
+            --RegexRemovePreprocessor.patterns="['.*#.*@.*title.*']"
           sed -i 's/\\,//g' README.md
 
       - name: Commit and Push Changes
