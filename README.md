@@ -19,11 +19,68 @@ $$x_i = x_0 + i \cdot h$$
 
 
 ```python
+import numpy as np
 def integrasi_trapesium(f, a, b, n):
     h = (b - a) / n
-    xi_sum = sum(f(a + i * h) for i in range(1, n))
-    L = h * (0.5 * f(a) + xi_sum + 0.5 * f(b))
-    return L
+    x = np.linspace(a, b, n+1)     # equal to x = [a + i*h for i in range(n+1)]
+    L = h * (0.5 * f(x[0]) + np.sum(f(x[1:n])) + 0.5 * f(x[n]))
+    return L, h
+```
+
+# Simulasi Dinamis: Tabel Hasil Integrasi & Error
+
+![Image](https://i.imgur.com/DjEOUAZ.png)
+
+
+```python
+SimulasiDinamis()
+```
+
+
+$\displaystyle \text{Indefinite Integral:}\quad\int f{\left(x \right)} dx=\frac{x^{3}}{3} + 5 x+C$
+
+
+
+$\displaystyle \text{Exact Integral:}\quad\int\limits_{0}^{2} f{\left(x \right)} dx≈\frac{38}{3}≈12.67$
+
+
+    
+    Hasil integral menggunakan integrasi trapesium untuk
+
+
+
+$\displaystyle f(x) = x^{2} + 5$
+
+
+    Hasil integral menggunakan integral trapesium untuk dari a = 0 sampai b = 2 dapat dilihat pada tabel berikut:
+    
+
+
+
+| $n$ | $h$ | $L$ | $E \%$ |
+|:---:|:---:|:---------------------:|:---------------------:|
+| 1 | 2.00 | 14.00 | 10.53% |
+| 2 | 1.00 | 13.00 | 2.63% |
+| 4 | 0.50 | 12.75 | 0.66% |
+| 8 | 0.25 | 12.69 | 0.16% |
+| 16 | 0.12 | 12.67 | 0.04% |
+
+
+
+    
+    Error(0.04%) < 0.05%
+
+
+# Penjelasan
+
+
+```python
+import numpy as np
+def integrasi_trapesium(f, a, b, n):
+    h = (b - a) / n
+    x = np.linspace(a, b, n+1)     # equal to x = [a + i*h for i in range(n+1)]
+    L = h * (0.5 * f(x[0]) + np.sum(f(x[1:n])) + 0.5 * f(x[n]))
+    return L, h
 ```
 
 Fungsi `integrasi_trapesium()` digunakan untuk menghitung pendekatan nilai integral tentu menggunakan metode trapesium majemuk (Composite Trapezoidal Rule). Pertama, program menghitung lebar setiap subinterval *h=(b−a)/n*. Selanjutnya, nilai fungsi pada seluruh titik interior dijumlahkan menggunakan perulangan. Nilai fungsi pada batas bawah dan batas atas diberi bobot 1/2 sesuai rumus metode trapesium. Hasil akhir diperoleh dengan mengalikan jumlah tersebut dengan lebar interval h. Implementasi ini merepresentasikan rumus:
@@ -120,24 +177,24 @@ f_num = sp.lambdify(x, f, 'numpy')
 
 if exact_value.is_real:
     exact_val_float = float(exact_value)
-    
+
     # Membuat header tabel Markdown
     table_md = "| $n$ | $h$ | Nilai Integrasi ($L$) | Galat/Error ($E_t$) |\n"
     table_md += "|:---:|:---:|:---------------------:|:-------------------:|\n"
-    
+
     for n in n_list:
         h = (b - a) / n
         L = integrasi_trapesium(f_num, a, b, n)
-        
+
         # Hitung galat relatif sejati (%)
         if exact_val_float != 0:
             error = abs((exact_val_float - L) / exact_val_float) * 100
             error_str = f"{error:.2f}%"
         else:
             error_str = "-"
-            
+
         table_md += f"| {n} | {h:.2f} | {L:.4f} | {error_str} |\n"
-        
+
     display(Markdown(table_md))
 else:
     print(f"{exact_value} is not Real/Undefined")
@@ -159,29 +216,29 @@ import sympy as sp
 
 if exact_value.is_real:
     exact_val_float = float(exact_value)
-    
+
     print("Hasil integral dari integral trapesium berganda untuk")
     show("f(x) = ", f)
     print(f"dari a = {a} sampai b = {b} dapat dilihat pada tabel berikut:\n")
-    
+
     # Menentukan nilai awal n_start dari Cell 7
     n_start = min(n_list) if ('n_list' in globals() and n_list) else 2
     if n_start < 2:
         n_start = 2
-        
+
     f_num = sp.lambdify(x, f, 'numpy')
-    
+
     # Membuat tabel Markdown lengkap secara dinamis hingga galat <= 1%
     table_md = "| $n$ | $h$ | $L$ | $E \\%$ |\n"
     table_md += "|:---:|:---:|:---------------------:|:---------------------:|\n"
-    
+
     n = n_start
     max_iterations = 100  # Batas keamanan untuk menghindari tabel yang terlalu panjang/hang
-    
+
     for _ in range(max_iterations):
         h = (b - a) / n
         L = integrasi_trapesium(f_num, a, b, n)
-        
+
         # Hitung galat error (%)
         if exact_val_float != 0:
             error = abs((exact_val_float - L) / exact_val_float) * 100
@@ -189,15 +246,15 @@ if exact_value.is_real:
         else:
             error = 0.0
             error_str = "-"
-            
+
         table_md += f"| {n} | {h:.4f} | {L:.4f} | {error_str} |\n"
-        
+
         # Kondisi berhenti jika galat error <= 1%
         if error <= 1.0:
             break
-            
+
         n += 1
-        
+
     display(Markdown(table_md))
 else:
     print(f"{exact_value} is not Real/Undefined")
